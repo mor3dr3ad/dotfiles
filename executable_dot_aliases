@@ -1,0 +1,92 @@
+#connect mons
+alias connect_mons='xrandr --output DisplayPort-2 --left-of DisplayPort-4 --output eDP --off && ~/.config/polybar/launcher.sh'
+alias disconnect_mons='xrandr --output eDP --primary --auto --output DisplayPort-2 --off --output DisplayPort-4 --off'
+
+#fix pulses
+alias pulse='pulseaudio -k && pulseaudio -D'
+
+#alias for version control of dotfiles
+#alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+# perform ls after cd if successful
+cdls() {
+builtin cd "$*"
+RESULT=$?
+if [ "$RESULT" -eq 0 ]; then
+ls
+fi
+}
+alias cd='cdls'
+
+#remove orphans
+alias remove_orphans='sudo pacman -Rs $(pacman -Qqtd)'
+#clean caches
+alias clean_cache='sudo pacman -Scc && yay -Scc && remove_orphans'
+
+#folder traversal
+alias ..='cd ..'
+alias ...='cd ../../'
+
+alias ll='ls -l -sort'
+alias ldir='ls -l | grep ^d'
+
+#connect to openwrt
+alias openwrt='sudo ssh 192.168.2.1'
+alias router='sudo ssh 192.168.2.2'
+alias router_wireshark="router tcpdump -i eth1 -U -s0 -w - 'not port 22' | sudo wireshark -k -i -"
+alias mount_nfs="sudo mount 192.168.2.2:/ /mnt/nfs"
+
+# other useful stuff
+alias yl="youtube-dl"
+alias yla="youtube-dl --extract-audio --audio-format mp3"
+alias update_calibre="sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin"
+alias dmesg="sudo dmesg -wH"
+alias keyboard="setxkbmap -option caps:swapescape -option 'grp:alt_space_toggle' -layout 'us,de'"
+
+function edx() {
+edx-dl -u christof.weigelmeier@posteo.net -p Oceanomare321 --sequential -i --prefer-cdn-videos -s "$@"
+}
+
+function edx_alt() {
+python /opt/edx-dl/edx-dl.py -u christof.weigelmeier@posteo.net -p Oceanomare321 --sequential -i --prefer-cdn-videos -s "$@"
+}
+
+function yt-dlpa() {
+yt-dlp -x --audio-format mp3 "$@"
+}
+
+function coursera() {
+coursera-dl -u christof.weigelmeier@posteo.net -p oceanomare "$@"
+}
+
+function adj_bcklght() {
+echo "$@" | sudo tee /sys/class/backlight/amdgpu_bl0/brightness
+}
+
+function 2ledger_sav() {
+python /opt/icsv2ledger/icsv2ledger.py -c ~/.config/icsv2ledger/icsv2ledgerrc -a SAV --csv-decimal-comma  --incremental --confirm-dupes "$@"
+}
+
+function convert_ogg_mp3() {
+j=1
+for i in *.ogg; do
+ffmpeg -i "$i" "$(printf "%03d.mp3" "$j")"
+j=$((j+1));
+done
+}
+
+function compress_pdf() {
+gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dDownsampleColorImages=true -dColorImageResolution=150 -dNOPAUSE -dBATCH -sOutputFile=compressed_output.pdf "$@"
+}
+
+alias upgrade_pip='pip freeze — local | grep -v ‘^\-e’ | cut -d = -f 1 | xargs -n1 pip install --user -U'
+alias df='df -h'
+alias mux='tmuxinator'
+alias backup='~/.scripts/backup_keepass.sh'
+alias upgrade="sudo pacman -Syu"
+alias upgrade_="yay -Syu --noconfirm"
+alias tor="sudo -u tor tor"
+alias mv="mv -i"
+alias mkdir="mkdir -p"
+alias df="df -h"
+alias dc=cd
